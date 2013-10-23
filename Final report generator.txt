@@ -71,3 +71,4 @@ FROM (SELECT [CAT #], UPC, DESCRIPTION, Order4, Order5, Sold5, Order6, Sold6, Or
 	)
 )  AS [%$##@_Alias]
 GROUP BY [CAT #], UPC, DESCRIPTION;
+test
