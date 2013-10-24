@@ -135,7 +135,19 @@ FROM (
 	ON [SKU Analysis-07-13].[CAT #]=[Order-July13].[CAT #]
 	)
 
-
+--LEFT JOIN September
+SELECT [CAT #], UPC, DESCRIPTION, 0 AS Order4, 0 AS Order5, 0 AS Sold5, 0 AS Order6, 0 AS Sold6, 0 AS Order7, 0 AS Sold7, 0 AS Order8, 0 AS Sold8, Nz(OrdersTotal,0) AS Order9, Nz([NET SALES (UNITS)],0) AS Sold9
+		FROM (
+			SELECT [SKU Total-09-13].[CAT #], [SKU Total-09-13].UPC, [SKU Total-09-13].[ITEM DESCRIPTION] AS DESCRIPTION, [SortOrder-09-13].OrdersTotal, [SKU Total-09-13].[NET SALES (UNITS)]
+			FROM (
+				SELECT [AllTitleList].[CAT #], [AllTitleList].UPC,[AllTitleList].[ITEM DESCRIPTION], [SKU Analysis-08-13].[NET SALES (UNITS)]
+				FROM [AllTitleList]
+				LEFT JOIN [SKU Analysis-09-13]
+				ON [SKU Analysis-09-13].UPC=[AllTitleList].UPC
+			) AS [SKU Total-09-13]
+			LEFT JOIN [SortOrder-09-13]
+			ON [SKU Total-09-13].UPC=[SortOrder-09-13].UPC
+		)
 
 
 --LEFT JOIN
