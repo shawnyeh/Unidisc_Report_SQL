@@ -3,6 +3,7 @@ FROM (SELECT [CAT #], UPC, DESCRIPTION, Order4, Order5, Sold5, Order6, Sold6, Or
 	FROM (	
 		SELECT [CAT #], UPC, [ITEM DESCRIPTION4] AS DESCRIPTION, Nz(OrdersTotal,0) AS Order4, 0 AS Order5, 0 AS Sold5, 0 AS Order6, 0 AS Sold6, 0 AS Order7, 0 AS Sold7, 0 AS Order8, 0 AS Sold8
 		FROM (
+			/* comment test */
 			SELECT [AllTitleList].[CAT #], [AllTitleList].UPC, [AllTitleList].[ITEM DESCRIPTION] AS [ITEM DESCRIPTION4],[SortOrder-04-13].[ITEM DESCRIPTION], [SortOrder-04-13].OrdersTotal
 			FROM [AllTitleList]
 			LEFT JOIN [SortOrder-04-13]

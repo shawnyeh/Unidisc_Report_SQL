@@ -1,0 +1,266 @@
+SELECT [CAT #], UPC, DESCRIPTION, SUM(Order4) AS [April Orders], SUM(Order5) AS [May Orders], SUM(Sold5) AS [May Sold], SUM(Order6) AS [June Orders], SUM(Sold6) AS [June Sold], SUM(Order7) AS [July Orders], SUM(Sold7) AS [July Sold], SUM(Order8) AS [Aug Orders], SUM(Sold8) AS [Aug Sold], SUM(QTY) AS Inventory
+FROM (SELECT [CAT #], UPC, DESCRIPTION, Order4, Order5, Sold5, Order6, Sold6, Order7, Sold7, Order8, Sold8, Order4+(Order5-Sold5)+(Order6-Sold6)+(Order7-Sold7)+(Order8-Sold8) AS QTY
+	FROM (	
+		SELECT [CAT #], UPC, [ITEM DESCRIPTION4] AS DESCRIPTION, Nz(OrdersTotal,0) AS Order4, 0 AS Order5, 0 AS Sold5, 0 AS Order6, 0 AS Sold6, 0 AS Order7, 0 AS Sold7, 0 AS Order8, 0 AS Sold8
+		FROM (
+			SELECT [AllTitleList].[CAT #], [AllTitleList].UPC, [AllTitleList].[ITEM DESCRIPTION] AS [ITEM DESCRIPTION4],[SortOrder-04-13].[ITEM DESCRIPTION], [SortOrder-04-13].OrdersTotal
+			FROM [AllTitleList]
+			LEFT JOIN [SortOrder-04-13]
+			ON [AllTitleList].UPC=[SortOrder-04-13].UPC
+		)
+		
+		UNION ALL
+		
+		SELECT [CAT #], UPC, DESCRIPTION, 0 AS Order4, Nz(OrdersTotal,0) AS Order5, Nz([NET SALES (UNITS)],0) AS Sold5, 0 AS Order6, 0 AS Sold6, 0 AS Order7, 0 AS Sold7, 0 AS Order8, 0 AS Sold8
+		FROM (
+			SELECT [SKU Total-05-13].[CAT #], [SKU Total-05-13].UPC, [SKU Total-05-13].[ITEM DESCRIPTION] AS DESCRIPTION, [SortOrder-05-13].OrdersTotal, [SKU Total-05-13].[NET SALES (UNITS)]
+			FROM (
+				SELECT [AllTitleList].[CAT #], [AllTitleList].UPC,[AllTitleList].[ITEM DESCRIPTION], [SKU Analysis-05-13].[NET SALES (UNITS)]
+				FROM [AllTitleList]
+				LEFT JOIN [SKU Analysis-05-13]
+				ON [SKU Analysis-05-13].UPC=[AllTitleList].UPC
+			) AS [SKU Total-05-13]
+			LEFT JOIN [SortOrder-05-13]
+			ON [SKU Total-05-13].UPC=[SortOrder-05-13].UPC
+		)
+		
+		UNION ALL
+		
+		SELECT [CAT #], UPC, DESCRIPTION, 0 AS Order4, 0 AS Order5, 0 AS Sold5, Nz(OrdersTotal,0) AS Order6, Nz([NET SALES (UNITS)],0) AS Sold6, 0 AS Order7, 0 AS Sold7, 0 AS Order8, 0 AS Sold8
+		FROM (
+			SELECT [SKU Total-06-13].[CAT #], [SKU Total-06-13].UPC, [SKU Total-06-13].[ITEM DESCRIPTION] AS DESCRIPTION, [SortOrder-06-13].OrdersTotal, [SKU Total-06-13].[NET SALES (UNITS)]
+			FROM (
+				SELECT [AllTitleList].[CAT #], [AllTitleList].UPC,[AllTitleList].[ITEM DESCRIPTION], [SKU Analysis-06-13].[NET SALES (UNITS)]
+				FROM [AllTitleList]
+				LEFT JOIN [SKU Analysis-06-13]
+				ON [SKU Analysis-06-13].UPC=[AllTitleList].UPC
+			) AS [SKU Total-06-13]
+			LEFT JOIN [SortOrder-06-13]
+			ON [SKU Total-06-13].UPC=[SortOrder-06-13].UPC
+		)
+		
+		UNION ALL
+		
+		SELECT [CAT #], UPC, DESCRIPTION, 0 AS Order4, 0 AS Order5, 0 AS Sold5, 0 AS Order6, 0 AS Sold6, Nz(OrdersTotal,0) AS Order7, Nz([NET SALES (UNITS)],0) AS Sold7, 0 AS Order8, 0 AS Sold8
+		FROM (
+			SELECT [SKU Total-07-13].[CAT #], [SKU Total-07-13].UPC, [SKU Total-07-13].[ITEM DESCRIPTION] AS DESCRIPTION, [SortOrder-07-13].OrdersTotal, [SKU Total-07-13].[NET SALES (UNITS)]
+			FROM (
+				SELECT [AllTitleList].[CAT #], [AllTitleList].UPC,[AllTitleList].[ITEM DESCRIPTION], [SKU Analysis-07-13].[NET SALES (UNITS)]
+				FROM [AllTitleList]
+				LEFT JOIN [SKU Analysis-07-13]
+				ON [SKU Analysis-07-13].UPC=[AllTitleList].UPC
+			) AS [SKU Total-07-13]
+			LEFT JOIN [SortOrder-07-13]
+			ON [SKU Total-07-13].UPC=[SortOrder-07-13].UPC
+		)
+		
+		UNION ALL
+		
+		SELECT [CAT #], UPC, DESCRIPTION, 0 AS Order4, 0 AS Order5, 0 AS Sold5, 0 AS Order6, 0 AS Sold6, 0 AS Order7, 0 AS Sold7, Nz(OrdersTotal,0) AS Order8, Nz([NET SALES (UNITS)],0) AS Sold8
+		FROM (
+			SELECT [SKU Total-08-13].[CAT #], [SKU Total-08-13].UPC, [SKU Total-08-13].[ITEM DESCRIPTION] AS DESCRIPTION, [SortOrder-08-13].OrdersTotal, [SKU Total-08-13].[NET SALES (UNITS)]
+			FROM (
+				SELECT [AllTitleList].[CAT #], [AllTitleList].UPC,[AllTitleList].[ITEM DESCRIPTION], [SKU Analysis-08-13].[NET SALES (UNITS)]
+				FROM [AllTitleList]
+				LEFT JOIN [SKU Analysis-08-13]
+				ON [SKU Analysis-08-13].UPC=[AllTitleList].UPC
+			) AS [SKU Total-08-13]
+			LEFT JOIN [SortOrder-08-13]
+			ON [SKU Total-08-13].UPC=[SortOrder-08-13].UPC
+		)
+	)
+)  AS [%$##@_Alias]
+GROUP BY [CAT #], UPC, DESCRIPTION;
+
+
+--SKU Analysis-04-13
+SELECT [CAT #], UPC,[ITEM DESCRIPTION]
+FROM(
+	SELECT [CAT #], UPC,[ITEM DESCRIPTION]
+	FROM [SKU Analysis-05-13]
+	UNION ALL
+	SELECT [CAT #], UPC,[ITEM DESCRIPTION]
+	FROM [SKU Analysis-06-13]
+	UNION ALL
+	SELECT [CAT #], UPC,[ITEM DESCRIPTION]
+	FROM [SKU Analysis-07-13]
+	) AS [SKU Analysis-04-13]
+GROUP BY [CAT #], UPC,[ITEM DESCRIPTION];
+
+--combine all titles
+SELECT [CAT #], UPC,[ITEM DESCRIPTION]
+FROM(
+	SELECT [CAT #], UPC,[ITEM DESCRIPTION]
+	FROM [SKU Analysis-05-13]
+	UNION ALL
+	SELECT [CAT #], UPC,[ITEM DESCRIPTION]
+	FROM [SKU Analysis-06-13]
+	UNION ALL
+	SELECT [CAT #], UPC,[ITEM DESCRIPTION]
+	FROM [SKU Analysis-07-13]
+	UNION ALL
+	SELECT [CAT #], UPC,[ITEM DESCRIPTION]
+	FROM [SKU Analysis-08-13]
+	) AS [AllTitleList]
+GROUP BY [CAT #], UPC,[ITEM DESCRIPTION];
+
+
+--Sort order
+SELECT [CAT #], UPC,[ITEM DESCRIPTION], SUM(Orders) AS OrdersJuly
+FROM(
+	SELECT [CAT #], UPC,[ITEM DESCRIPTION],Orders
+	FROM [Order-July13]
+	) AS [Sort Order-July13]
+GROUP BY [CAT #], UPC,[ITEM DESCRIPTION];
+
+
+
+--LEFT JOIN April
+
+SELECT [SKU Analysis-04-13].[CAT #], [SKU Analysis-04-13].UPC, [SKU Analysis-04-13].[ITEM DESCRIPTION],[Order-Apr13].[ITEM DESCRIPTION], [Order-Apr13].Orders
+FROM [SKU Analysis-04-13]
+LEFT JOIN [Order-Apr13]
+ON [SKU Analysis-04-13].[CAT #]=[Order-Apr13].[CAT #];
+
+--LEFT JOIN July
+
+SELECT [CAT #], UPC, DESCRIPTION, 0 AS Order4, 0 AS Order5, 0 AS Sold5, 0 AS Order6, 0 AS Sold6, Nz(Orders,0) AS Order7, [NET SALES (UNITS)] AS Sold7, Order7-[NET SALES (UNITS)] AS QTY
+FROM (
+	SELECT [SKU Analysis-07-13].[CAT #], [SKU Analysis-07-13].UPC, [SKU Analysis-07-13].[ITEM DESCRIPTION] AS DESCRIPTION, [Order-July13].[ITEM DESCRIPTION], [Order-July13].Orders, [SKU Analysis-07-13].[NET SALES (UNITS)]
+	FROM [SKU Analysis-07-13]
+	LEFT JOIN [Order-July13]
+	ON [SKU Analysis-07-13].[CAT #]=[Order-July13].[CAT #]
+	)
+
+
+
+
+--LEFT JOIN
+
+SELECT [CAT #], UPC, DESCRIPTION, 0 AS Order4, Nz(Orders,0) AS Order5, Nz([NET SALES (UNITS)],0) AS Sold5, 0 AS Order6, 0 AS Sold6, 0 AS Order7, 0 AS Sold7
+		FROM (
+			SELECT [SKU Total-05-13].[CAT #], [SKU Total-05-13].UPC, [SKU Total-05-13].[ITEM DESCRIPTION] AS DESCRIPTION, [Order-May13].Orders, [SKU Total-05-13].[NET SALES (UNITS)]
+			FROM (
+				SELECT [AllTitleList].[CAT #], [AllTitleList].UPC,[AllTitleList].[ITEM DESCRIPTION], [SKU Analysis-05-13].[NET SALES (UNITS)]
+				FROM [AllTitleList]
+				LEFT JOIN [SKU Analysis-05-13]
+				ON [SKU Analysis-05-13].[CAT #]=[AllTitleList].[CAT #]
+			) AS [SKU Total-05-13]
+			LEFT JOIN [Order-May13]
+			ON [SKU Total-05-13].[CAT #]=[Order-May13].[CAT #]
+		)
+
+
+
+
+
+
+--
+--working code
+--
+--a1, no item description
+
+SELECT [CAT #], UPC,[ITEM DESCRIPTION], SUM(Order4) AS [April Orders], SUM(Order5) AS [May Orders], SUM(Sold5) AS [May Sold], SUM(Order6) AS [June Orders], SUM(Sold6) AS [June Sold], SUM(Order7) AS [July Orders], SUM(Sold7) AS [July Sold], SUM(QTY) AS Inventory
+FROM (
+	SELECT [CAT #], UPC,[ITEM DESCRIPTION], Order4, Order5, Sold5, Order6, Sold6, Order7, Sold7, Order4+Order5-Sold5+Order6-Sold6+Order7-Sold7 AS QTY
+	FROM (
+		SELECT [CAT #], UPC, [ITEM DESCRIPTION], [Orders] AS Order4, 0 AS Order5, 0 AS Sold5, 0 AS Order6, 0 AS Sold6, 0 AS Order7, 0 AS Sold7
+		FROM [Order-Apr13]
+		
+		UNION ALL
+		
+		SELECT [CAT #], UPC, [ITEM DESCRIPTION], 0 AS Order4, [Orders] AS Order5, 0 AS Sold5, 0 AS Order6, 0 AS Sold6, 0 AS Order7, 0 AS Sold7
+		FROM [Order-May13]
+
+		UNION ALL
+
+		SELECT [CAT #], UPC, [ITEM DESCRIPTION], 0 AS Order4, 0 AS Order5, [NET SALES (UNITS)] AS Sold5, 0 AS Order6, 0 AS Sold6, 0 AS Order7, 0 AS Sold7
+		FROM [SKU Analysis-05-13]
+		
+		UNION ALL
+		
+		SELECT [CAT #], UPC, [ITEM DESCRIPTION], 0 AS Order4, 0 AS Order5, 0 AS Sold5, [Orders] AS Order6, 0 AS Sold6, 0 AS Order7, 0 AS Sold7
+		FROM [Order-June13]
+		
+		UNION ALL
+		
+		SELECT [CAT #], UPC, [ITEM DESCRIPTION], 0 AS Order4, 0 AS Order5, 0 AS Sold5, 0 AS Order6, [NET SALES (UNITS)] AS Sold6, 0 AS Order7, 0 AS Sold7
+		FROM [SKU Analysis-06-13]
+		
+		UNION ALL
+		
+		SELECT [CAT #], UPC, [ITEM DESCRIPTION], 0 AS Order4, 0 AS Order5, 0 AS Sold5, 0 AS Order6, 0 AS Sold6, [Orders] AS Order7, 0 AS Sold7
+		FROM [Order-July13]
+		
+		UNION ALL
+		
+		SELECT [CAT #], UPC, [ITEM DESCRIPTION], 0 AS Order4, 0 AS Order5, 0 AS Sold5, 0 AS Order6, 0 AS Sold6, 0 AS Order7, [NET SALES (UNITS)] AS Sold7
+		FROM [SKU Analysis-07-13]
+	)
+)
+GROUP BY [CAT #], UPC, [ITEM DESCRIPTION];
+
+--final one
+
+SELECT [CAT #], UPC, DESCRIPTION, SUM(Order4) AS [April Orders], SUM(Order5) AS [May Orders], SUM(Sold5) AS [May Sold], SUM(Order6) AS [June Orders], SUM(Sold6) AS [June Sold], SUM(Order7) AS [July Orders], SUM(Sold7) AS [July Sold], SUM(QTY) AS Inventory
+FROM (
+	SELECT [CAT #], UPC, DESCRIPTION, Order4, Order5, Sold5, Order6, Sold6, Order7, Sold7, Order4+(Order5-Sold5)+(Order6-Sold6)+(Order7-Sold7) AS QTY
+	FROM (	
+		SELECT [CAT #], UPC, [ITEM DESCRIPTION4] AS DESCRIPTION, Orders AS Order4, 0 AS Order5, 0 AS Sold5, 0 AS Order6, 0 AS Sold6, 0 AS Order7, 0 AS Sold7
+		FROM (
+			SELECT [SKU Analysis-04-13].[CAT #], [SKU Analysis-04-13].UPC, [SKU Analysis-04-13].[ITEM DESCRIPTION] AS [ITEM DESCRIPTION4],[Order-Apr13].[ITEM DESCRIPTION], [Order-Apr13].Orders
+			FROM [SKU Analysis-04-13]
+			LEFT JOIN [Order-Apr13]
+			ON [SKU Analysis-04-13].[CAT #]=[Order-Apr13].[CAT #]
+		)
+		
+		UNION ALL
+		
+		SELECT [CAT #], UPC, DESCRIPTION, 0 AS Order4, Orders AS Order5, [NET SALES (UNITS)] AS Sold5, 0 AS Order6, 0 AS Sold6, 0 AS Order7, 0 AS Sold7
+		FROM (
+			SELECT [SKU Analysis-05-13].[CAT #], [SKU Analysis-05-13].UPC, [SKU Analysis-05-13].[ITEM DESCRIPTION] AS DESCRIPTION,[Order-May13].[ITEM DESCRIPTION], [Order-May13].Orders, [SKU Analysis-05-13].[NET SALES (UNITS)]
+			FROM [SKU Analysis-05-13]
+			LEFT JOIN [Order-May13]
+			ON [SKU Analysis-05-13].[CAT #]=[Order-May13].[CAT #]
+		)
+		
+		UNION ALL
+		
+		SELECT [CAT #], UPC, DESCRIPTION, 0 AS Order4, 0 AS Order5, 0 AS Sold5, Orders AS Order6, [NET SALES (UNITS)] AS Sold6, 0 AS Order7, 0 AS Sold7
+		FROM (
+			SELECT [SKU Analysis-06-13].[CAT #], [SKU Analysis-06-13].UPC, [SKU Analysis-06-13].[ITEM DESCRIPTION] AS DESCRIPTION,[Order-June13].[ITEM DESCRIPTION], [Order-June13].Orders, [SKU Analysis-06-13].[NET SALES (UNITS)]
+			FROM [SKU Analysis-06-13]
+			LEFT JOIN [Order-June13]
+			ON [SKU Analysis-06-13].[CAT #]=[Order-June13].[CAT #]
+		)
+		
+		UNION ALL
+		
+		SELECT [CAT #], UPC, DESCRIPTION, 0 AS Order4, 0 AS Order5, 0 AS Sold5, 0 AS Order6, 0 AS Sold6, Orders AS Order7, [NET SALES (UNITS)] AS Sold7, Order7-Sold7 AS QTY
+		FROM (
+			SELECT [SKU Analysis-07-13].[CAT #], [SKU Analysis-07-13].UPC, [SKU Analysis-07-13].[ITEM DESCRIPTION] AS DESCRIPTION,[Order-July13].[ITEM DESCRIPTION], [Order-July13].Orders, [SKU Analysis-07-13].[NET SALES (UNITS)]
+			FROM [SKU Analysis-07-13]
+			LEFT JOIN [Order-July13]
+			ON [SKU Analysis-07-13].[CAT #]=[Order-July13].[CAT #]
+		)
+	)
+)
+GROUP BY [CAT #], UPC, DESCRIPTION;
+
+
+
+
+
+--reference
+
+SELECT TotalSale.[CAT #], TotalSale.UPC, TotalSale.[ITEM DESCRIPTION], Sum(TotalSale.BOM5) AS [May Order], Sum(TotalSale.UNITS05) AS [MAY Sold], SUM(TotalSale.BOM6) AS [Jun Order], SUM(TotalSale.UNITS06) AS [Jun Sold], SUM(QTY) AS [TL QTY]
+FROM (
+	SELECT [CAT #], UPC, [ITEM DESCRIPTION], BOM AS BOM5,[NET SALES (UNITS)] AS UNITS05,0 AS BOM6,  0 AS UNITS06, BOM - [NET SALES (UNITS)] AS QTY
+	FROM [SKU Analysis-05-13]
+
+	UNION ALL
+
+	SELECT [CAT #], UPC, [ITEM DESCRIPTION], 0 AS BOM5,0 AS UNITS05, BOM AS BOM6, [NET SALES (UNITS)] AS UNITS06, BOM - [NET SALES (UNITS)] AS QTY
+	FROM [SKU Analysis-06-13]
+)  AS TotalSale
+GROUP BY TotalSale.[CAT #], TotalSale.UPC, TotalSale.[ITEM DESCRIPTION];
