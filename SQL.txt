@@ -119,6 +119,7 @@ FROM(
 	UNION ALL
 	SELECT [CAT #], UPC,[ITEM DESCRIPTION]
 	FROM [SKU Analysis-09-13]
+	
 	) AS [AllTitleList]
 GROUP BY [CAT #], UPC,[ITEM DESCRIPTION];
 
@@ -180,7 +181,20 @@ SELECT [CAT #], UPC, DESCRIPTION, 0 AS Order4, Nz(Orders,0) AS Order5, Nz([NET S
 			ON [SKU Total-05-13].[CAT #]=[Order-May13].[CAT #]
 		)
 
+--LEFT JOIN June
 
+SELECT [CAT #], UPC, DESCRIPTION, 0 AS Order4, 0 AS Order5, 0 AS Sold5, Nz(OrdersTotal,0) AS Order6, Nz([NET SALES (UNITS)],0) AS Sold6, 0 AS Order7, 0 AS Sold7, 0 AS Order8, 0 AS Sold8, 0 AS Order9, 0 AS Sold9
+		FROM (
+			SELECT [SKU Total-06-13].[CAT #], [SKU Total-06-13].UPC, [SKU Total-06-13].[ITEM DESCRIPTION] AS DESCRIPTION, [SortOrder-06-13].OrdersTotal, [SKU Total-06-13].[NET SALES (UNITS)]
+			FROM (
+				SELECT [AllTitleList].[CAT #], [AllTitleList].UPC,[AllTitleList].[ITEM DESCRIPTION], [SKU Analysis-06-13].[NET SALES (UNITS)]
+				FROM [AllTitleList]
+				LEFT JOIN [SKU Analysis-06-13]
+				ON [SKU Analysis-06-13].UPC=[AllTitleList].UPC
+			) AS [SKU Total-06-13]
+			LEFT JOIN [SortOrder-06-13]
+			ON [SKU Total-06-13].UPC=[SortOrder-06-13].UPC
+		)
 
 
 
