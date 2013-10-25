@@ -133,16 +133,16 @@ FROM(
 	FROM(
 		SELECT [CAT #], UPC,[ITEM DESCRIPTION]
 		FROM [SKU Analysis-05-13]
-		UNION ALL
+		UNION
 		SELECT [CAT #], UPC,[ITEM DESCRIPTION]
 		FROM [SKU Analysis-06-13]
-		UNION ALL
+		UNION
 		SELECT [CAT #], UPC,[ITEM DESCRIPTION]
 		FROM [SKU Analysis-07-13]
-		UNION ALL
+		UNION
 		SELECT [CAT #], UPC,[ITEM DESCRIPTION]
 		FROM [SKU Analysis-08-13]
-		UNION ALL
+		UNION
 		SELECT [CAT #], UPC,[ITEM DESCRIPTION]
 		FROM [SKU Analysis-09-13]
 		)
@@ -166,6 +166,75 @@ FROM(
 	)
 )AS [AllTitleList]
 GROUP BY [CAT #], UPC,[ITEM DESCRIPTION];
+
+SELECT [allTitleList-Order].[CAT #], [allTitleList-Order].UPC, [allTitleList-Order].[ITEM DESCRIPTION]
+FROM [allTitleList-Order]
+LEFT JOIN [allTitleList-SKU]
+ON [allTitleList-Order].UPC=[allTitleList-SKU].UPC;
+
+SELECT [allTitleList-Order].[CAT #], [allTitleList-Order].UPC, [allTitleList-Order].[ITEM DESCRIPTION]
+FROM [allTitleList-Order]
+FULL OUTER JOIN [allTitleList-SKU]
+ON [allTitleList-Order].UPC=[allTitleList-SKU].UPC;
+
+
+-- LEFT JOIN All SKU Titles
+SELECT [SKU Analysis-09-13].[CAT #], [SKU Analysis-09-13].UPC, [SKU Analysis-09-13].[ITEM DESCRIPTION]
+FROM [SKU Analysis-09-13]
+LEFT JOIN (
+			SELECT [SKU Analysis-08-13].[CAT #], [SKU Analysis-08-13].UPC, [SKU Analysis-08-13].[ITEM DESCRIPTION]
+			FROM [SKU Analysis-08-13]
+			LEFT JOIN (
+						SELECT [SKU Analysis-07-13].[CAT #], [SKU Analysis-07-13].UPC, [SKU Analysis-07-13].[ITEM DESCRIPTION]
+						FROM [SKU Analysis-07-13]
+						LEFT JOIN (
+									SELECT [SKU Analysis-06-13].[CAT #], [SKU Analysis-06-13].UPC, [SKU Analysis-06-13].[ITEM DESCRIPTION]
+									FROM [SKU Analysis-06-13]
+									LEFT JOIN [SKU Analysis-05-13]
+									ON [SKU Analysis-06-13].UPC=[SKU Analysis-05-13].UPC
+								) AS [SKU Analysis-new06-13]
+						ON [SKU Analysis-new06-13].UPC=[SKU Analysis-07-13].UPC
+					) AS [SKU Analysis-new07-13]
+			ON [SKU Analysis-new07-13].UPC=[SKU Analysis-08-13].UPC
+		) AS [SKU Analysis-new08-13]
+ON [SKU Analysis-new08-13].UPC=[SKU Analysis-09-13].UPC
+ORDER BY [SKU Analysis-09-13].UPC;
+
+-- LEFT JOIN ALL Order titles
+SELECT [Order-Sep13].[CAT #], [Order-Sep13].UPC, [Order-Sep13].[ITEM DESCRIPTION]
+FROM [Order-Sep13]
+LEFT JOIN (
+			SELECT [Order-Aug13].[CAT #], [Order-Aug13].UPC, [Order-Aug13].[ITEM DESCRIPTION]
+			FROM [Order-Aug13]
+			LEFT JOIN (
+						SELECT [Order-July13].[CAT #], [Order-July13].UPC, [Order-July13].[ITEM DESCRIPTION]
+						FROM [Order-July13]
+						LEFT JOIN (
+									SELECT [Order-June13].[CAT #], [Order-June13].UPC, [Order-June13].[ITEM DESCRIPTION]
+									FROM [Order-June13]
+									LEFT JOIN [Order-May13]
+									ON [Order-June13].UPC=[Order-May13].UPC
+									) AS [Order-newJune13]
+						ON [Order-newJune13].UPC=[Order-July13].UPC
+						) AS [Order-newJuly13]
+			ON [Order-newJuly13].UPC=[Order-Aug13].UPC
+			) AS [Order-newAug13]
+ON [Order-newAug13].UPC=[Order-Sep13].UPC
+ORDER BY [Order-Sep13].UPC;
+
+
+
+
+
+SELECT [SKU Analysis-08-13].[CAT #], [SKU Analysis-08-13].UPC, [SKU Analysis-08-13].[ITEM DESCRIPTION]
+FROM [SKU Analysis-08-13]
+LEFT JOIN [SKU Analysis-09-13]
+ON [SKU Analysis-08-13].UPC=[SKU Analysis-09-13].UPC
+ORDER BY [SKU Analysis-08-13].UPC;
+
+
+
+
 
 SELECT [allTitleList-Order].[CAT #], [allTitleList-Order].UPC, [allTitleList-Order].[ITEM DESCRIPTION]
 FROM [allTitleList-Order]
