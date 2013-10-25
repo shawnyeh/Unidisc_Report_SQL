@@ -145,8 +145,7 @@ FROM(
 		UNION ALL
 		SELECT [CAT #], UPC,[ITEM DESCRIPTION]
 		FROM [SKU Analysis-09-13]
-		) AS [AllTitleList-SKU]
-	GROUP BY [CAT #], UPC,[ITEM DESCRIPTION];
+		)
 	UNION ALL
 	SELECT  [CAT #], UPC,[ITEM DESCRIPTION]
 	FROM (
@@ -164,10 +163,14 @@ FROM(
 		UNION ALL
 		SELECT [CAT #], UPC,[ITEM DESCRIPTION]
 		FROM [Order-Sep13]
-	) AS [AllTitleList-Order]
-	GROUP BY [CAT #], UPC,[ITEM DESCRIPTION];
+	)
 )AS [AllTitleList]
 GROUP BY [CAT #], UPC,[ITEM DESCRIPTION];
+
+SELECT [allTitleList-Order].[CAT #], [allTitleList-Order].UPC, [allTitleList-Order].[ITEM DESCRIPTION]
+FROM [allTitleList-Order]
+LEFT JOIN [allTitleList-SKU]
+ON [allTitleList-Order].UPC=[allTitleList-SKU].UPC;
 
 --Sort order
 SELECT [CAT #], UPC,[ITEM DESCRIPTION], SUM(Orders) AS OrdersJuly
